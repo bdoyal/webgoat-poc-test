@@ -30,6 +30,8 @@ import java.sql.Statement;
 import org.owasp.webgoat.container.LessonDataSource;
 import org.owasp.webgoat.container.assignments.AssignmentEndpoint;
 import org.owasp.webgoat.container.assignments.AttackResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -41,6 +43,7 @@ public class SqlInjectionLesson6b extends AssignmentEndpoint {
   private final LessonDataSource dataSource;
 
   public SqlInjectionLesson6b(LessonDataSource dataSource) {
+    this.logger = LoggerFactory.getLogger(SqlInjectionLesson6b.class);
     this.dataSource = dataSource;
   }
 
@@ -68,11 +71,12 @@ public class SqlInjectionLesson6b extends AssignmentEndpoint {
           password = results.getString("password");
         }
       } catch (SQLException sqle) {
-        sqle.printStackTrace();
+        logger.error("SQL Exception occurred while fetching password", sqle);
         // do nothing
       }
     } catch (Exception e) {
       e.printStackTrace();
+      logger.error("Exception occurred while establishing connection", e);
       // do nothing
     }
     return (password);
